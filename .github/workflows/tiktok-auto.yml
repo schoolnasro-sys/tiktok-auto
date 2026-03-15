@@ -18,9 +18,10 @@ jobs:
         with:
           python-version: '3.10'
       
-      - name: تنزيل المكتبات
+      - name: تنزيل المكتبات (طريقة مضمونة)
         run: |
-          pip install moviepy gtts numpy
+          python -m pip install --upgrade pip
+          python -m pip install moviepy gtts numpy
           sudo apt-get update
           sudo apt-get install -y ffmpeg
       
@@ -32,4 +33,3 @@ jobs:
         with:
           name: فيديو-تيك-توك
           path: "*.mp4"
-       
