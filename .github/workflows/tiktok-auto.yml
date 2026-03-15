@@ -1,0 +1,33 @@
+#name: إنشاء فيديو تيك توك تلقائياً
+
+on:
+  schedule:
+    - cron: '0 */6 * * *'  # يعمل كل 6 ساعات
+  workflow_dispatch:        # يمكنك تشغيله يدوياً
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: إعداد Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+          
+      - name: تثبيت المكتبات
+        run: |
+          pip install moviepy gtts numpy imageio-ffmpeg
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg
+          
+      - name: إنشاء الفيديو
+        run: python create_video.py
+        
+      - name: رفع الفيديو
+        uses: actions/upload-artifact@v4
+        with:
+          name: فيديو-تيك-توك
+          path: "*.mp4"
