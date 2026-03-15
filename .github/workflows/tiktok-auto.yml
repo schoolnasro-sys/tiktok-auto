@@ -1,36 +1,29 @@
-name: إنشاء فيديو تيك توك تلقائي
+
+        name: TikTok Auto
 
 on:
-  schedule:
-    - cron: '0 */6 * * *'
-  workflow_dispatch:
+  push:
+    branches:
+      - main
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    
+
     steps:
-      - name: استنساخ المشروع
-        uses: actions/checkout@v4
-      
-      - name: إعداد Python
-        uses: actions/setup-python@v5
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
         with:
-          python-version: '3.10'
-      
-      - name: تثبيت المكتبات
+          python-version: '3.x'
+
+      - name: Install dependencies
         run: |
-          pip install moviepy gtts numpy
-          sudo apt-get update
-          sudo apt-get install -y ffmpeg
-      
-      - name: الدخول إلى المجلد وإنشاء الفيديو
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run script
         run: |
-          cd tiktok-auto
-          python create_video.py
-      
-      - name: رفع الفيديو
-        uses: actions/upload-artifact@v4
-        with:
-          name: فيديو-تيك-توك
-          path: "tiktok-auto/*.mp4"
+          python your_script.py
