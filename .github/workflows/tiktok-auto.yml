@@ -1,63 +1,40 @@
-name: إنشاء فيديو تيك توك تلقائي
+name: إنشاء فيديو تيك توك
 
 on:
   workflow_dispatch:
-  schedule:
-    - cron: '0 */6 * * *'
 
 jobs:
   build:
     runs-on: ubuntu-latest
     
     steps:
-      - name: استنساخ المشروع
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
       
       - name: إعداد Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.9'
+          python-version: '3.10'
       
-      - name: تنظيف pip cache
-        run: |
-          python -m pip cache purge
-          rm -rf ~/.cache/pip
-      
-      - name: تثبيت setuptools أولاً (الأهم)
-        run: |
-          python -m pip install --upgrade pip
-          python -m pip install --upgrade setuptools wheel
-      
-      - name: تثبيت المكتبات الأساسية
-        run: |
-          python -m pip install imageio==2.31.1
-          python -m pip install imageio-ffmpeg==0.4.8
-          python -m pip install numpy==1.23.5
-          python -m pip install decorator==4.4.2
-          python -m pip install tqdm==4.64.1
-      
-      - name: تثبيت gtts و moviepy
-        run: |
-          python -m pip install gtts==2.3.2
-          python -m pip install moviepy==1.0.3
-      
-      - name: تثبيت ffmpeg
+      - name: تثبيت كل شيء بطريقة مختلفة
         run: |
           sudo apt-get update
           sudo apt-get install -y ffmpeg
+          sudo apt-get install -y python3-pip
+          
+          # تثبيت setuptools عبر apt (طريقة نظامية)
+          sudo apt-get install -y python3-setuptools
+          
+          # ترقية pip
+          python3 -m pip install --upgrade pip
+          
+          # تثبيت المكتبات
+          python3 -m pip install moviepy gtts numpy
       
-      - name: التحقق من التثبيت
-        run: |
-          python -c "import pkg_resources; print('✅ setuptools مثبت')"
-          python -c "import moviepy.editor; print('✅ moviepy مثبت')"
-          python -c "from gtts import gTTS; print('✅ gtts مثبت')"
-      
-      - name: إنشاء الفيديو
-        run: |
-          python create_video.py
+      - name: تشغيل الفيديو
+        run: python3 create_video.py
       
       - name: رفع الفيديو
         uses: actions/upload-artifact@v4
         with:
-          name: فيديو-تيك-توك
+          name: فيديو
           path: "*.mp4"
